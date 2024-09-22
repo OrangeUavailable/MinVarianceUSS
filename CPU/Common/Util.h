@@ -35,7 +35,15 @@
 
 struct TUPLES_ID {
   uint32_t key[TUPLES_NUM];
-
+  int HASH()
+  {
+    uint32_t start = int(pow(2,32)-1);
+    for(int i = 0;i<TUPLES_NUM;i++)
+    {
+      start = start^key[i];
+    }
+    return start % 2 == 0 ? -1 : 1;
+  }
   TUPLES_ID() { memset(key, 0, sizeof(uint32_t) * TUPLES_NUM); }
 
   bool operator==(const TUPLES_ID &a) const {
@@ -60,10 +68,35 @@ struct TUPLES_VALUE {
     }
   }
 
+  TUPLES_VALUE operator*(int k) {
+    for (int i = 0; i < TUPLES_VALUES_ELEMENT_NUM; ++i) {
+      values[i] *= k;
+    }
+    return *this;
+  }
+
+  TUPLES_VALUE operator+(const TUPLES_VALUE &t)
+  {
+    for(int i = 0;i<TUPLES_VALUES_ELEMENT_NUM;i++)
+    {
+      values[i] += t.values[i];
+    }
+    return *this;
+  }
+  TUPLES_VALUE operator/(const double p) {
+    for(int i = 0; i < TUPLES_VALUES_ELEMENT_NUM; i++) {
+      values[i] /= p;
+    }
+    return *this;
+  }
+
   bool operator==(const TUPLES_VALUE &a) const {
     return memcmp(values, a.values, sizeof(values)) == 0;
   }
 
+  bool operator<(const TUPLES_VALUE &a) const {
+    return this->sum_squares() < a.sum_squares();
+  }
   bool empty() const {
     for (int i = 0; i < TUPLES_VALUES_ELEMENT_NUM; ++i) {
       if (values[i] != 0) {

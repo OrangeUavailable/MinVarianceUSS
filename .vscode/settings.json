@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "cstdint": "cpp",
+        "valarray": "cpp",
+        "text_encoding": "cpp",
+        "thread": "cpp",
+        "chrono": "cpp",
+        "span": "cpp"
+    }
+}
