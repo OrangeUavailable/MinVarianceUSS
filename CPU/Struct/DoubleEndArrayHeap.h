@@ -23,7 +23,7 @@ class DoubleEndArrayHeap// : public std::priority_queue
 {
 private:
 
-    vector<bucket> buckets; //这里应该是一列指向bucket的指针，我不知道应该写vector<bucket>还是vector<bucket*>
+    vector<bucket*> buckets; //这里应该是一列指向bucket的指针，我不知道应该写vector<bucket>还是vector<bucket*>
     uint32_t maxSize;
     uint32_t size;
     uint32_t midpoint;
@@ -35,26 +35,27 @@ public:
         size = 0;
         maxSize = _maxSize;
         buckets.resize(maxSize + 1);
-        memset(buckets[0], 0, sizeof(bucket) * (maxSize + 1));
+        // memset(buckets[0], 0, sizeof(bucket*) * (maxSize + 1));
     };
 
     ~DoubleEndArrayHeap() {
+        delete[] buckets;
     };
 
     void swap(uint32_t k1, uint32_t k2) {
-        buckets[k1].index = k2;
-        buckets[k2].index = k1;
+        buckets[k1]->index = k2;
+        buckets[k2]->index = k1;
         buckets[midpoint] = buckets[k1];
         buckets[k1] = buckets[k2];
         buckets[k2] = buckets[midpoint];
     }
 
     uint32_t minBucketIdx(uint32_t k1, uint32_t k2) {
-        return buckets[k1] < buckets[k2] ? k1 : k2 ;
+        return *buckets[k1] < *buckets[k2] ? k1 : k2 ;
     }
 
     uint32_t minBucketIdx(uint32_t k1, uint32_t k2, uint32_t k3) {
-        return buckets[k1] < buckets[k2] ? minBucketIdx(k1, k3) : minBucketIdx(k2, k3) ;
+        return *buckets[k1] < *buckets[k2] ? minBucketIdx(k1, k3) : minBucketIdx(k2, k3) ;
     }
 
     uint32_t parent(uint32_t idx) {
@@ -71,7 +72,7 @@ public:
 
     void bubbleUp(uint32_t idx) {
         uint32_t currParent = parent(idx);
-        while(!(currParent < 0) && buckets[idx] < buckets[currParent]) {
+        while(!(currParent < 0) && *buckets[idx] < *buckets[currParent]) {
             swap(idx, currParent);
             idx = currParent;
             currParent = parent(idx);
@@ -89,12 +90,12 @@ public:
                     if(toGo == idx) {return;}
                     swap(idx, toGo);
                     idx = toGO;
-                } else if(buckets[currLeft] < buckets[idx]) {
+                } else if(*buckets[currLeft] < *buckets[idx]) {
                     swap(idx, currLeft);
                     idx = currLeft;
                 }
                 return;
-            } else if(rightValid && [currRight] < buckets[idx]) {
+            } else if(rightValid && *buckets[currRight] < *buckets[idx]) {
                 swap(idx, currRight);
                     idx = currRight;
             } else {
@@ -103,7 +104,7 @@ public:
         }
     }
 
-    ComparableObject getMin(bool fromEnd = 0) { return fromEnd ? buckets[maxSize].object : buckets[0].object;}
+    ComparableObject getMin(bool fromEnd = 0) { return fromEnd ? buckets[maxSize]->object : buckets[0]->object;}
 
     void add(ComparableObject obj/*, bool toEndHeap = 0*/) {
         midpoint++;
@@ -122,17 +123,17 @@ public:
                 bubbleUp(bct.index);
             }
         } else if(bct.index < midpoint) {
-            buckets[midpoint] = bct;
+            buckets[midpoint] = &bct;
             buckets[bct.index] = buckets[midpoint - 1];
-            buckets[bct.index].index = bct.index;
+            buckets[bct.index]->index = bct.index;
             midpoint--;
             bubbleDown(bct.index);
             bct.index = midpoint + 1;
             bubbleUp(bct.index);
         } else if(bct.index > midpoint) {
-            buckets[midpoint] = bct;
+            buckets[midpoint] = &bct;
             buckets[bct.index] = buckets[midpoint + 1];
-            buckets[bct.index].index = bct.index;
+            buckets[bct.index]->index = bct.index;
             midpoint++;
             bubbleDown(bct.index);
             bct.index = midpoint - 1;
@@ -140,9 +141,9 @@ public:
         }
     }
 
-    bucket bucketAt(uint32_t idx) { return buckets[idx];}
+    bucket bucketAt(uint32_t idx) { return buckets[idx];} //返回bucket指针而非bucket本身
 
-    ComparableObject objectAt(uint32_t idx) { return buckets[idx].object;}
+    ComparableObject objectAt(uint32_t idx) { return buckets[idx]->object;}
 
     uint32_t size() {
         return size;
@@ -153,6 +154,8 @@ public:
     }
 
 };
+
+#endif
 
 // DoubleEndArrayHeap::DoubleEndArrayHeap(/* args */)
 // {
