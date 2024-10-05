@@ -3,21 +3,7 @@
 #include<iostream>
 using namespace std;
 #include<vector>
-template <typename ComparableObject>
-struct bucket {
-    ComparableObject object;
-    uint32_t index;
-
-    bucket(ComparableObject obj = nullptr, uint32_t idx = 0) {
-        object = obj;
-        index = idx;
-    }
-
-    bool operator<(const bucket &a) const {
-        return this->object < a.object;
-    }
-
-};
+#include"bucket.h"
 template <typename ComparableObject>
 class DoubleEndArrayHeap// : public std::priority_queue
 {
@@ -29,7 +15,11 @@ private:
     uint32_t midpoint;
 
 public:
-    
+     DoubleEndArrayHeap()
+     {
+        midpoint = 0;
+        size = 0;
+     }
     DoubleEndArrayHeap(uint32_t _maxSize) {
         midpoint = 0;
         size = 0;

@@ -7,6 +7,7 @@
 #include<vector>
 
 #include "DoubleEndArrayHeap.h"
+#include"bucket.h"
 #include "Util.h"
 
 struct MinVarianceBucket {
@@ -49,6 +50,7 @@ typedef std::unordered_map<TUPLES_ID, bucket<MinVarianceBucket>*> ValuesMap; //è
 
 class OurMinVarianceUSS {
  public:
+  OurMinVarianceUSS();
   OurMinVarianceUSS(uint32_t _MEMORY, uint32_t _MAX_KEY_NUM_PER_BUCKET, std::string _name = "OurMinVarianceUSS") {
     this->name = _name;
     MAX_KEY_NUM_PER_BUCKET = _MAX_KEY_NUM_PER_BUCKET;
