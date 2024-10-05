@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "Hyper.h"
+#include "MinVariance.h"
 #include "MMap.h"
 #include "Single.h"
 #include "USS.h"
@@ -82,8 +83,50 @@ class BenchMark_Synthetic {
 
   ~BenchMark_Synthetic() {}
 
+  void HHMinVarianceBench(uint32_t MEMORY, uint32_t _MAX_KEY_NUM_PER_BUCKET = 3, 
+                    std::string BENCHNAME = "OurMinVariance") {
+    benchname = BENCHNAME;
+
+    memory = MEMORY;
+
+    std::cout << "start MinVarianceBench!" << std::endl;
+
+    OurMinVarianceUSS *sketch = new OurMinVarianceUSS(MEMORY, _MAX_KEY_NUM_PER_BUCKET);
+
+    // insert
+    auto start_insert = std::chrono::high_resolution_clock::now();
+    for (uint32_t i = 0; i < length; ++i) {
+      sketch->Insert(dataset[i]);
+    }
+
+    auto end_insert = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> tm_insert =
+        end_insert - start_insert;
+    throughput = length / (tm_insert.count() / 1000);
+    std::cout << "MinVariance Insert Time: " << tm_insert.count() / 1000 << "s"
+              << std::endl;
+    std::cout << "MinVariance Throughput: " << throughput << std::endl;
+
+    // query
+    auto start_query = std::chrono::high_resolution_clock::now();
+    std::unordered_map<TUPLES_ID, TUPLES_VALUE> estTuple = sketch->AllQuery();
+    auto end_query = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> tm_query =
+        end_query - start_query;
+    std::cout << "MinVariance Query Time: " << tm_query.count() / 1000 << "s"
+              << std::endl;
+
+#ifndef SKEW
+    CompareSubset(estTuple, tuplesMp);
+#else
+    CompareSubset_SKEW(estTuple, tuplesMp);
+#endif
+
+    delete sketch;
+  }
+
   void HHHyperBench(uint32_t MEMORY, uint32_t HASH_NUM = 2,
-                    std::string BENCHNAME = "Ours") {
+                    std::string BENCHNAME = "Hyper") {
     benchname = BENCHNAME;
 
     memory = MEMORY;
