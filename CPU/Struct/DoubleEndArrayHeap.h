@@ -9,26 +9,31 @@ class DoubleEndArrayHeap// : public std::priority_queue
 {
 private:
 
-    vector<bucket*> buckets; //这里应该是一列指向bucket的指针，我不知道应该写vector<bucket>还是vector<bucket*>
+    bucket<ComparableObject>** buckets; //这里应该是一列指向bucket的指针，我不知道应该写vector<bucket>还是vector<bucket*>
     uint32_t maxSize;
     uint32_t size;
     uint32_t midpoint;
 
 public:
      DoubleEndArrayHeap()
-     {
-        midpoint = 0;
-        size = 0;
+     { DoubleEndArrayHeap(3000);
      }
     DoubleEndArrayHeap(uint32_t _maxSize) {
         midpoint = 0;
         size = 0;
         maxSize = _maxSize;
-        buckets.resize(maxSize + 1);
+        buckets = new bucket<ComparableObject>*[maxSize];
+        for (uint32_t i = 0; i < maxSize; i++) {
+            buckets[i] = nullptr;
+        }
+        // buckets.resize(maxSize + 1);
         // memset(buckets[0], 0, sizeof(bucket*) * (maxSize + 1));
     };
 
     ~DoubleEndArrayHeap() {
+        for (uint32_t i = 0; i < maxSize; i++) {
+            delete buckets[i];
+        }
         delete[] buckets;
     };
 
@@ -79,7 +84,7 @@ public:
                     uint32_t toGo = minBucketIdx(idx, currLeft, currRight);
                     if(toGo == idx) {return;}
                     swap(idx, toGo);
-                    idx = toGO;
+                    idx = toGo;
                 } else if(*buckets[currLeft] < *buckets[idx]) {
                     swap(idx, currLeft);
                     idx = currLeft;
@@ -103,7 +108,7 @@ public:
         size++;
     }
 
-    void set(bucket bct, ComparableObject toObj, bool switchEnd = 0) {
+    void set(bucket<ComparableObject> bct, ComparableObject toObj, bool switchEnd = 0) {
         if(!switchEnd) {
             if(bct.object < toObj) {
                 bct.object = toObj;
@@ -131,26 +136,18 @@ public:
         }
     }
 
-    bucket bucketAt(uint32_t idx) { return buckets[idx];} //返回bucket指针而非bucket本身
+    bucket<ComparableObject>* bucketAt(uint32_t idx) { return buckets[idx];} //返回bucket指针而非bucket本身
 
     ComparableObject objectAt(uint32_t idx) { return buckets[idx]->object;}
 
-    uint32_t size() {
+    uint32_t Size() {
         return size;
     }
 
-    uint32_t midpoint() {
+    uint32_t Midpoint() {
         return midpoint;
     }
 
 };
 
 #endif
-
-// DoubleEndArrayHeap::DoubleEndArrayHeap(/* args */)
-// {
-// }
-
-// DoubleEndArrayHeap::~DoubleEndArrayHeap()
-// {
-// }

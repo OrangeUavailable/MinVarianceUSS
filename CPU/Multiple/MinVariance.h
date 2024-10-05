@@ -4,15 +4,17 @@
 #include <cstring>
 #include <random>
 #include <unordered_map>
-#include<vector>
+#include <vector>
 
 #include "DoubleEndArrayHeap.h"
-#include"bucket.h"
+#include "bucket.h"
 #include "Util.h"
 
 struct MinVarianceBucket {
   vector<TUPLES_ID> IDs;
   TUPLES_VALUE Value;
+
+  MinVarianceBucket() {}
 
   MinVarianceBucket(vector<TUPLES_ID> _IDs, TUPLES_VALUE _Value) {
     IDs = _IDs;
@@ -78,12 +80,12 @@ class OurMinVarianceUSS {
     }
     else if (mp.size() < MAX_KEY_NUM_PER_BUCKET * BUCKET_NUM) {
       uint32_t idx = ((mp.size() + 1) / BUCKET_NUM) % 2 == 0 ? 0 : BUCKET_NUM;
-      bucket toUpdate = counterHeap.bucketAt(idx); //问题同上
+      bucket<MinVarianceBucket>* toUpdate = counterHeap.bucketAt(idx); //问题同上
       mp[item.id] = toUpdate;
-      counterHeap.set(*toUpdate, toUpdate->object.update(toUpdate.object.Value + (item.value * item.id.HASH())), true);
+      counterHeap.set(*toUpdate, toUpdate->object.update(toUpdate->object.Value + (item.value * item.id.HASH())), true);
     } else {
       uint32_t idx = MAX_KEY_NUM_PER_BUCKET % 2 == 0 ? BUCKET_NUM : 0;
-      bucket toUpdate = counterHeap.bucketAt(idx); //问题同上
+      bucket<MinVarianceBucket>* toUpdate = counterHeap.bucketAt(idx); //问题同上
       double norm1 = sqrt(item.value.sum_squares()),
              norm2 = sqrt(toUpdate->object.Value.sum_squares());
       if(norm1 + norm2 != 0) {
@@ -93,12 +95,12 @@ class OurMinVarianceUSS {
         if(dist(e2) < prob) {
           std::uniform_int_distribution<> randomIdx(0, MAX_KEY_NUM_PER_BUCKET - 1);
           uint32_t toReplace = randomIdx(e2);
-          mp.erase(toUpdate.object.IDs[toReplace]);
-          toUpdate.object.IDs[toReplace] = item.id;
+          mp.erase(toUpdate->object.IDs[toReplace]);
+          toUpdate->object.IDs[toReplace] = item.id;
           mp[item.id] = toUpdate; //问题同上
-          counterHeap.set(*toUpdate, toUpdate->object.update(item.value * item.id.HASH()) / prob, false);
+          counterHeap.set(*toUpdate, toUpdate->object.update(item.value * item.id.HASH() / prob), false);
         } else {
-          counterHeap.set(*toUpdate, toUpdate->object.update(toUpdate.object.Value / (1 - prob)), false);
+          counterHeap.set(*toUpdate, toUpdate->object.update(toUpdate->object.Value / (1 - prob)), false);
         }
       }
     }

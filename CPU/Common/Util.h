@@ -25,7 +25,7 @@
 
 // number of values
 // Notice: ifdef AVERAGE: TUPLES_VALUES_ELEMENT_NUM needs + 1
-#define TUPLES_VALUES_ELEMENT_NUM 5
+#define TUPLES_VALUES_ELEMENT_NUM 2
 
 // number of subset test
 #define SUBSETS_NUM 1000
