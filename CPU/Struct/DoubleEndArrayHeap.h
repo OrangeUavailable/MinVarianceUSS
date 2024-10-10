@@ -243,11 +243,3 @@ public:
 };
 
 #endif
-
-// DoubleEndArrayHeap::DoubleEndArrayHeap(/* args */)
-// {
-// }
-
-// DoubleEndArrayHeap::~DoubleEndArrayHeap()
-// {
-// }

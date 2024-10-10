@@ -82,6 +82,7 @@ class OurMinVarianceUSS {
       mp[item.id] = counterHeap.bucketAt(mp.size()); //我不知道这个bucketAt()返回的是一个指针还是一个bucket
     }
     else if (mp.size() < MAX_KEY_NUM_PER_BUCKET * BUCKET_NUM) {
+<<<<<<< HEAD
       if(mp.size()>= BUCKET_NUM +20&& b==0) {
         for(uint32_t i=0;i<=BUCKET_NUM;i++) {
           std::cout<<"counterHeap.bucketAt("<<i<<")->index: "<<counterHeap.bucketAt(i)->index<<std::endl;
@@ -93,6 +94,12 @@ class OurMinVarianceUSS {
       mp[item.id] = toSwitch;
       // {std::cout<<"toSwitch->index: "<<toSwitch->index<<std::endl;}
       counterHeap.set(*toSwitch, toSwitch->object.update(toSwitch->object.Value + (item.value * item.id.hashSign())), true);
+=======
+      uint32_t idx = ((mp.size() + 1) / BUCKET_NUM) % 2 == 0 ? 0 : BUCKET_NUM;
+      bucket<MinVarianceBucket>* toUpdate = counterHeap.bucketAt(idx); //问题同上
+      mp[item.id] = toUpdate;
+      counterHeap.set(*toUpdate, toUpdate->object.update(toUpdate->object.Value + (item.value * item.id.HASH())), true);
+>>>>>>> 35d9362603d36102e2389de56c8dddeb1e80069c
     } else {
       uint32_t idx = MAX_KEY_NUM_PER_BUCKET % 2 == 0 ? BUCKET_NUM : 0;
       bucket<MinVarianceBucket>* toUpdate = counterHeap.bucketAt(idx); //问题同上
@@ -108,7 +115,11 @@ class OurMinVarianceUSS {
           mp.erase(toUpdate->object.IDs[toReplace]);
           toUpdate->object.IDs[toReplace] = item.id;
           mp[item.id] = toUpdate; //问题同上
+<<<<<<< HEAD
           counterHeap.set(*toUpdate, toUpdate->object.update(item.value * item.id.hashSign() / prob), false);
+=======
+          counterHeap.set(*toUpdate, toUpdate->object.update(item.value * item.id.HASH() / prob), false);
+>>>>>>> 35d9362603d36102e2389de56c8dddeb1e80069c
         } else {
           counterHeap.set(*toUpdate, toUpdate->object.update(toUpdate->object.Value / (1 - prob)), false);
         }
