@@ -83,7 +83,7 @@ class BenchMark_Synthetic {
 
   ~BenchMark_Synthetic() {}
 
-  void HHMinVarianceBench(uint32_t MEMORY, uint32_t _MAX_KEY_NUM_PER_BUCKET = 3, 
+  void HHMinVarianceBench(uint32_t MEMORY, uint32_t _MAX_KEY_NUM_PER_BUCKET = 4, 
                     std::string BENCHNAME = "OurMinVariance") {
     benchname = BENCHNAME;
 
@@ -92,6 +92,7 @@ class BenchMark_Synthetic {
     std::cout << "start MinVarianceBench!" << std::endl;
 
     OurMinVarianceUSS *sketch = new OurMinVarianceUSS(MEMORY, _MAX_KEY_NUM_PER_BUCKET);
+    
 
     // insert
     auto start_insert = std::chrono::high_resolution_clock::now();
@@ -345,6 +346,8 @@ class BenchMark_Synthetic {
       }
     }
 #endif
+    std::cout<<benchname<<" avg abs error:"<<aae_sum<<std::endl;
+    std::cout<<benchname<<" avg rel error:"<<are_sum<<std::endl;
     std::ofstream ofs;
     ofs.open(filename + ".txt", std::ios::app);
     ofs << benchname << " " << memory << " " << aae_sum / NUM << " "
@@ -372,9 +375,12 @@ class BenchMark_Synthetic {
         }
       }
     }
+    std::cout<<benchname<<": ";
     for (int i = 0; i < TUPLES_VALUES_ELEMENT_NUM; ++i) {
       are_vec[i] /= cnt_vec[i];
+      std::cout<<are_vec[i]<<" ";
     }
+    std::cout<<std::endl;
     std::ofstream ofs;
     ofs.open(filename + ".txt", std::ios::app);
     ofs << memory << " " << skew_factor << " "

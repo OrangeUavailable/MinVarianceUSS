@@ -1,5 +1,8 @@
-template <typename ComparableObject>
-class bucket {
+#ifndef BUCKET_H
+#define BUCKET_H
+
+template <typename ComparableObject> class bucket {
+    public:
     ComparableObject object;
     uint32_t index;
 
@@ -13,3 +16,5 @@ class bucket {
     }
 
 };
+
+#endif

@@ -10,6 +10,7 @@ int main(int argc, char *argv[]) {
     dataset.HHHyperBench(1000 * 500);
     dataset.HHSingleBench(1000 * 500);
     dataset.HHUSSBench(1000 * 500);
+    dataset.HHMinVarianceBench(1020 * 10);
   }
 
   return 0;
