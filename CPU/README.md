@@ -20,7 +20,7 @@ mkdir build
 cd build
 cmake ..
 make
-./CPU ../../data/Synthetic/Hyper_zipf_1.500_50m_10K10V.txt
+./CPU ../../data/Synthetic/Hyper_zipf_1.500_10K10V.txt
 ```
 
 Results can be found in `example_FullKey.txt` and `example_PartialKey.txt`.

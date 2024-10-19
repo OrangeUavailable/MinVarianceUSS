@@ -6,13 +6,13 @@
 using namespace std;
 
 uint32_t key_num = 5;
-uint32_t value_num = 2;
+uint32_t value_num = 5;
 
 uint32_t key_len = 4;
 uint32_t value_len = 4;
 
-uint32_t flow_num = 5000;
-uint64_t packet_num = 5E7;
+uint32_t flow_num = 2E4;
+uint64_t packet_num = 2E7;
 
 vector<double> value_lambda = {1, 2, 4, 8, 16, 1, 2, 4, 8, 16};
 // vector<double> value_lambda = {128, 128};

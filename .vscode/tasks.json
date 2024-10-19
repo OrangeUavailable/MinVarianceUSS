@@ -1,0 +1,42 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "generate build files",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-S", "${workspaceFolder}/CPU",
+                "-B", "${workspaceFolder}/CPU/build"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "detail": "Running CMake to generate build files."
+        },
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "cmake --build ${workspaceFolder}/CPU/build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "dependsOn": "generate build files"
+        },
+        {
+            "label": "run program",
+            "type": "shell",
+            "command": "${workspaceFolder}/CPU/build/CPU",  // 可执行文件路径
+            "args": [
+                "${workspaceFolder}/data/Synthetic/Hyper_zipf_1.500_10K10V.txt"  // 输入文件路径
+            ],
+            "group": "none",
+            "dependsOn": "build",  // 在运行前确保程序已构建
+            "problemMatcher": []
+        }
+    ]
+}

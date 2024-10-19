@@ -25,6 +25,7 @@ class OurHyper {
       counter[i] = new TUPLES[LENGTH];
       memset(counter[i], 0, sizeof(TUPLES) * LENGTH);
     }
+    std::cout<<"Hyper bucket number: "<<LENGTH * HASH_NUM<<std::endl;
   }
 
   ~OurHyper() {

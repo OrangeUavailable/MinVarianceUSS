@@ -1,0 +1,33 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch MinVarianceUSS",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/CPU/build/CPU",  // 可执行文件路径
+            "args": [
+                "${workspaceFolder}/data/Synthetic/Hyper_zipf_1.500_10K10V.txt"  // 传入的参数
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/CPU/build",  // 工作目录
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",  // 使用 gdb 进行调试
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build",  // 调试前构建程序
+            "miDebuggerPath": "/usr/bin/gdb",
+            "logging": {
+                "moduleLoad": false,
+                "trace": false
+            }
+        }
+    ]
+}
+

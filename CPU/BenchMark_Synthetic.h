@@ -83,7 +83,17 @@ class BenchMark_Synthetic {
 
   ~BenchMark_Synthetic() {}
 
-  void HHMinVarianceBench(uint32_t MEMORY, uint32_t _MAX_KEY_NUM_PER_BUCKET = 3, 
+  void BCTMinVarianceBench(uint32_t BUCKET_NUM, uint32_t _MAX_KEY_NUM_PER_BUCKET = 2) {
+    uint32_t MEMORY = (2 * _MAX_KEY_NUM_PER_BUCKET * sizeof(TUPLES_ID) + sizeof(TUPLES_VALUE) + sizeof(uint32_t)) * BUCKET_NUM;
+    HHMinVarianceBench(MEMORY, _MAX_KEY_NUM_PER_BUCKET);
+  }
+
+  void BCTHyperBench(uint32_t BUCKET_NUM, uint32_t HASH_NUM = 2) {
+    uint32_t MEMORY = sizeof(TUPLES) * BUCKET_NUM;
+    HHHyperBench(MEMORY, HASH_NUM);
+  }
+
+  void HHMinVarianceBench(uint32_t MEMORY, uint32_t _MAX_KEY_NUM_PER_BUCKET = 2, 
                     std::string BENCHNAME = "OurMinVariance") {
     benchname = BENCHNAME;
 
@@ -92,6 +102,7 @@ class BenchMark_Synthetic {
     std::cout << "start MinVarianceBench!" << std::endl;
 
     OurMinVarianceUSS *sketch = new OurMinVarianceUSS(MEMORY, _MAX_KEY_NUM_PER_BUCKET);
+    
 
     // insert
     auto start_insert = std::chrono::high_resolution_clock::now();
@@ -303,6 +314,8 @@ class BenchMark_Synthetic {
   void CompareSubset(T mp, T record) {
     double aae_sum = 0.0;
     double are_sum = 0.0;
+    double sqe_sum = 0.0;
+    double sre_sum = 0.0;
 #ifndef AVERAGE
     double NUM = 0;
     for (int i = 0; i < SUBSETS_NUM; ++i) {
@@ -317,6 +330,14 @@ class BenchMark_Synthetic {
           aae_sum += abs(mp_sum - record_sum);
           are_sum += abs(mp_sum - record_sum) / record_sum;
         }
+      }
+    }
+    for (int j = 0; j < TUPLES_VALUES_ELEMENT_NUM; ++j) {
+      for (auto id : key_vector) {
+        sqe_sum += pow(mp[id].values[j] - record[id].values[j], 2);
+          if(record[id].values[j] != 0) {
+            sre_sum += sqe_sum / pow(record[id].values[j], 2);
+          }
       }
     }
 #else
@@ -345,6 +366,10 @@ class BenchMark_Synthetic {
       }
     }
 #endif
+    std::cout<<benchname<<" abs error:"<<aae_sum<<std::endl;
+    std::cout<<benchname<<" rel error:"<<are_sum<<std::endl;
+    std::cout<<benchname<<" sqr error:"<<sqe_sum<<std::endl;
+    std::cout<<benchname<<" sqr rel error:"<<sre_sum<<std::endl;
     std::ofstream ofs;
     ofs.open(filename + ".txt", std::ios::app);
     ofs << benchname << " " << memory << " " << aae_sum / NUM << " "
@@ -372,9 +397,12 @@ class BenchMark_Synthetic {
         }
       }
     }
+    std::cout<<benchname<<": ";
     for (int i = 0; i < TUPLES_VALUES_ELEMENT_NUM; ++i) {
       are_vec[i] /= cnt_vec[i];
+      std::cout<<are_vec[i]<<" ";
     }
+    std::cout<<std::endl;
     std::ofstream ofs;
     ofs.open(filename + ".txt", std::ios::app);
     ofs << memory << " " << skew_factor << " "

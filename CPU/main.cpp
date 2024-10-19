@@ -7,9 +7,13 @@ int main(int argc, char *argv[]) {
   for (uint32_t i = 1; i < argc; ++i) {
     std::cout << "example dataset: " << argv[i] << std::endl;
     BenchMark_Synthetic dataset(argv[i], "example");
-    dataset.HHHyperBench(1000 * 500);
-    dataset.HHSingleBench(1000 * 500);
-    dataset.HHUSSBench(1000 * 500);
+    // dataset.HHHyperBench(1000 * 305);
+    // dataset.HHSingleBench(1000 * 500);
+    // dataset.HHUSSBench(1000 * 500);
+    // dataset.HHMinVarianceBench(1000 * 833);
+    dataset.BCTHyperBench(8000);
+    dataset.BCTMinVarianceBench(8000, 1);
+
   }
 
   return 0;
